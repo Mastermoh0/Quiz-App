@@ -292,6 +292,27 @@ def easy():
                     "!",
                     "^",
                     "|"
+                ],
+                [
+                    "What is the output of 'hello'[1]?",
+                    "h",
+                    "e",
+                    "l", 
+                    "o"
+                ],
+                [
+                    "Which of the following is correct about Python?",
+                    "It supports automatic garbage collection",
+                    "It can be easily integrated with C, C++, COM, ActiveX etc",
+                    "Both A and B",
+                    "None of the above"
+                ],
+                [
+                    "Which of the following is the truncation division operator in Python?",
+                    "/",
+                    "//",
+                    "%",
+                    "None of the above"
                 ]
             ]
     answer = [
@@ -299,7 +320,10 @@ def easy():
                 "34.000000",
                 "27.2",
                 "Class",
-                "^"
+                "^",
+                "e",
+                "Both A and B",
+                "//"
              ]
     li = ['',0,1,2,3,4]
     x = random.choice(li[1:])
@@ -443,13 +467,37 @@ def medium():
                     "__str__ = 1",
                     "none of the mentioned"
                 ], 
+                [
+                    "What is the output of print(2**3**2)?",
+                    "64",
+                    "512",
+                    "None",
+                    "Error"
+                ],
+                [
+                    "Which of the following is not a valid set operation in Python?",
+                    "union()",
+                    "intersection()",
+                    "difference()",
+                    "addition()"
+                ],
+                [
+                    "What will be the output of print(0.1 + 0.2 == 0.3)?",
+                    "True",
+                    "False",
+                    "None",
+                    "Error"
+                ]
             ]
     answer = [
             "accept",
             "1",
             "25",
             "33",
-            "none of the mentioned"
+            "none of the mentioned",
+            "512",
+            "addition()",
+            "False"
             ]
     
     li = ['',0,1,2,3,4]
@@ -593,6 +641,27 @@ def difficult():
         "120",
         "error",
         "24.0"
+    ],
+    [
+        "What is the output of print(type(1/2))?",
+        "<class 'int'>",
+        "<class 'float'>",
+        "<class 'double'>",
+        "<class 'number'>"
+    ],
+    [
+        "Which of the following is correct about Python memory management?",
+        "Memory is managed by Python private heap space",
+        "Memory is managed by operating system",
+        "Memory is managed by user",
+        "None of the above"
+    ],
+    [
+        "What will be the output of print(2 * 3 ** 3 * 4)?",
+        "216",
+        "108",
+        "72",
+        "144"
     ] 
             
 ]
@@ -601,7 +670,10 @@ def difficult():
             "in",
             "(1,2,3)",
             "4",
-            "error"
+            "error",
+            "<class 'float'>",
+            "Memory is managed by Python private heap space",
+            "216"
             ]
     
     li = ['',0,1,2,3,4]
