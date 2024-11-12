@@ -240,15 +240,34 @@ def easy():
     
     def countDown():
         check = 0
-        for k in range(10, 0, -1):
+        for k in range(15, 0, -1):
             
             if k == 1:
                 check=-1
-            timer.configure(text=k)
+            
+            if k >= 10:
+                timer_color = "#00FF00"
+            elif k >= 5:
+                timer_color = "#FFD700"
+            else:
+                timer_color = "#FF0000"
+                
+            timer.configure(
+                text=str(k),
+                font=("Helvetica", 24, "bold"),
+                fg=timer_color,
+                bg=easy_frame['bg']
+            )
+            
             easy_frame.update()
             time.sleep(1)
             
-        timer.configure(text="Times up!")
+        timer.configure(
+            text="Times up!",
+            font=("Helvetica", 24, "bold"),
+            fg="#FF0000"
+        )
+        
         if check==-1:
             return (-1)
         else:
@@ -347,8 +366,8 @@ def easy():
     
     li.remove(x)
     
-    timer = Label(e)
-    timer.place(relx=0.8,rely=0.82,anchor=CENTER)
+    timer = Label(easy_frame, bg="#BADA55")
+    timer.place(relx=0.8, rely=0.3, anchor=CENTER)
     
     
     
@@ -414,15 +433,34 @@ def medium():
     
     def countDown():
         check = 0
-        for k in range(10, 0, -1):
+        for k in range(15, 0, -1):
             
             if k == 1:
                 check=-1
-            timer.configure(text=k)
+            
+            if k >= 10:
+                timer_color = "#00FF00"
+            elif k >= 5:
+                timer_color = "#FFD700"
+            else:
+                timer_color = "#FF0000"
+                
+            timer.configure(
+                text=str(k),
+                font=("Helvetica", 24, "bold"),
+                fg=timer_color,
+                bg=med_frame['bg']
+            )
+            
             med_frame.update()
             time.sleep(1)
             
-        timer.configure(text="Times up!")
+        timer.configure(
+            text="Times up!",
+            font=("Helvetica", 24, "bold"),
+            fg="#FF0000"
+        )
+        
         if check==-1:
             return (-1)
         else:
@@ -522,8 +560,8 @@ def medium():
     
     li.remove(x)
     
-    timer = Label(m)
-    timer.place(relx=0.8,rely=0.82,anchor=CENTER)
+    timer = Label(med_frame, bg="#A1A100")
+    timer.place(relx=0.8, rely=0.3, anchor=CENTER)
     
     
     
@@ -589,15 +627,34 @@ def difficult():
     
     def countDown():
         check = 0
-        for k in range(10, 0, -1):
+        for k in range(15, 0, -1):
             
             if k == 1:
                 check=-1
-            timer.configure(text=k)
+            
+            if k >= 10:
+                timer_color = "#00FF00"
+            elif k >= 5:
+                timer_color = "#FFD700"
+            else:
+                timer_color = "#FF0000"
+                
+            timer.configure(
+                text=str(k),
+                font=("Helvetica", 24, "bold"),
+                fg=timer_color,
+                bg=hard_frame['bg']
+            )
+            
             hard_frame.update()
             time.sleep(1)
             
-        timer.configure(text="Times up!")
+        timer.configure(
+            text="Times up!",
+            font=("Helvetica", 24, "bold"),
+            fg="#FF0000"
+        )
+        
         if check==-1:
             return (-1)
         else:
@@ -698,8 +755,8 @@ def difficult():
     
     li.remove(x)
     
-    timer = Label(h)
-    timer.place(relx=0.8,rely=0.82,anchor=CENTER)
+    timer = Label(hard_frame, bg="#008080")
+    timer.place(relx=0.8, rely=0.3, anchor=CENTER)
     
     
     
