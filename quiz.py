@@ -815,43 +815,106 @@ def difficult():
     h.mainloop()
 
 def showMark(mark):
+    # IMPROVEMENT 1: Larger window with custom size
     sh = Tk()
-    sh.title('Your Marks')
+    sh.title('Quiz Results')
+    sh.geometry('800x600')  # Increased from default size
     
-    st = "Your score is "+str(mark)+"/5"
-    mlabel = Label(sh,text=st,fg="black", bg="white")
-    mlabel.pack()
+    # IMPROVEMENT 2: Added gradient-like effect with nested frames
+    result_canvas = Canvas(sh, width=800, height=600, bg="#1a1a1a")  # Dark outer background
+    result_canvas.pack(fill="both", expand=True)
     
-    def callsignUpPage():
-        sh.destroy()
-        start()
+    result_frame = Frame(result_canvas, bg="#2d2d2d")  # Slightly lighter inner background
+    result_frame.place(relwidth=0.8, relheight=0.8, relx=0.1, rely=0.1)
     
-    def myeasy():
-        sh.destroy()
-        easy()
+    # IMPROVEMENT 3: Added congratulations header with custom styling
+    congrats = "Quiz Completed!"
+    clabel = Label(result_frame, text=congrats, 
+                  font=("Helvetica", 24, "bold"),  # Larger, bold font
+                  fg="#FFD700",  # Gold color for emphasis
+                  bg="#2d2d2d")
+    clabel.pack(pady=20)
     
-    b24=Button(text="Re-attempt", command=myeasy, bg="black", fg="white")
-    b24.pack()
+    # IMPROVEMENT 4: Enhanced score display with percentage
+    percentage = (mark/5) * 100
+    score_text = f"Your Score: {mark}/5 ({percentage:.1f}%)"
+    score_label = Label(result_frame, text=score_text, 
+                       font=("Helvetica", 20),
+                       fg="white", bg="#2d2d2d")
+    score_label.pack(pady=10)
     
-    from matplotlib.backends.backend_tkagg import (FigureCanvasTkAgg, NavigationToolbar2Tk)
-    from matplotlib.backend_bases import key_press_handler
+    # IMPROVEMENT 5: Added dynamic performance message with emojis
+    if percentage >= 80:
+        message = "Excellent! Outstanding performance! 🏆"
+        color = "#00ff00"  # Green for excellent
+    elif percentage >= 60:
+        message = "Good job! Keep it up! 👍"
+        color = "#ffff00"  # Yellow for good
+    else:
+        message = "Keep practicing! You can do better! 💪"
+        color = "#ff9900"  # Orange for needs improvement
+        
+    msg_label = Label(result_frame, text=message, 
+                     font=("Helvetica", 16),
+                     fg=color, bg="#2d2d2d")
+    msg_label.pack(pady=10)
+    
+    # IMPROVEMENT 6: Enhanced pie chart with better styling
+    from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
     from matplotlib.figure import Figure
-
-    import numpy as np
-
-    fig = Figure(figsize=(5, 4), dpi=100)
-    labels = 'Marks Obtained','Total Marks'
-    sizes = [int(mark),5-int(mark)]
-    explode = (0.1,0)
-    fig.add_subplot(111).pie(sizes, explode=explode, labels=labels, autopct='%1.1f%%',shadow=True, startangle=0)
     
-
-    canvas = FigureCanvasTkAgg(fig, master=sh)  # A tk.DrawingArea.
+    fig = Figure(figsize=(6, 4), dpi=100)
+    fig.patch.set_facecolor('#2d2d2d')  # Match background color
+    
+    plot = fig.add_subplot(111)
+    plot.set_facecolor('#2d2d2d')
+    
+    # IMPROVEMENT 7: Better color scheme for pie chart
+    labels = ['Correct', 'Incorrect']
+    sizes = [int(mark), 5-int(mark)]
+    colors = ['#00ff00', '#ff4444']  # Green for correct, red for incorrect
+    explode = (0.1, 0)  # Emphasize correct answers
+    
+    plot.pie(sizes, explode=explode, labels=labels, colors=colors,
+            autopct='%1.1f%%', shadow=True, startangle=90)
+    
+    canvas = FigureCanvasTkAgg(fig, master=result_frame)
     canvas.draw()
-    canvas.get_tk_widget().pack(side=TOP, fill=BOTH, expand=1)
+    canvas.get_tk_widget().pack(pady=20)
     
-    b23=Button(text="Sign Out",command=callsignUpPage,fg="white", bg="black")
-    b23.pack()
+    # IMPROVEMENT 8: Added hover effects for buttons
+    def on_enter(e, button):
+        button['background'] = '#404040'  # Lighter shade on hover
+        
+    def on_leave(e, button):
+        button['background'] = '#333333'  # Original color
+    
+    # IMPROVEMENT 9: Better button organization with frame
+    button_frame = Frame(result_frame, bg="#2d2d2d")
+    button_frame.pack(pady=20)
+    
+    # IMPROVEMENT 10: Styled buttons with modern flat design
+    retry_btn = Button(button_frame, text="Try Again", 
+                      command=lambda: [sh.destroy(), easy()],
+                      font=("Helvetica", 12), 
+                      width=15, height=2,
+                      bg="#333333", fg="white", 
+                      relief=FLAT)  # Flat design for modern look
+    retry_btn.pack(side=LEFT, padx=10)
+    # Add hover effect
+    retry_btn.bind("<Enter>", lambda e: on_enter(e, retry_btn))
+    retry_btn.bind("<Leave>", lambda e: on_leave(e, retry_btn))
+    
+    signout_btn = Button(button_frame, text="Sign Out", 
+                        command=lambda: [sh.destroy(), start()],
+                        font=("Helvetica", 12), 
+                        width=15, height=2,
+                        bg="#333333", fg="white", 
+                        relief=FLAT)
+    signout_btn.pack(side=LEFT, padx=10)
+    # Add hover effect
+    signout_btn.bind("<Enter>", lambda e: on_enter(e, signout_btn))
+    signout_btn.bind("<Leave>", lambda e: on_leave(e, signout_btn))
     
     sh.mainloop()
 
