@@ -38,8 +38,10 @@ def loginPage(logdata):
     pas.place(relx=0.31,rely=0.5)
 
     def check():
-        for a,b,c,d in logdata:
+        global current_user
+        for a, b, c, d in logdata:
             if b == uname.get() and c == pas.get():
+                current_user = b
                 print(logdata)
                 
                 menu(a)
@@ -168,26 +170,24 @@ def signUpPage():
 
     sup.mainloop()
 
-def menu(abcdefgh):
+def menu(user):
     login.destroy()
-    global menu 
-    menu = Tk()
-    menu.title('Quiz App Menu')
+    global menu_window
+    menu_window = Tk()
+    menu_window.title('Quiz App Menu')
     
     
-    menu_canvas = Canvas(menu,width=720,height=440,bg="orange")
+    menu_canvas = Canvas(menu_window,width=720,height=440,bg="orange")
     menu_canvas.pack()
 
     menu_frame = Frame(menu_canvas,bg="#7FFFD4")
     menu_frame.place(relwidth=0.8,relheight=0.8,relx=0.1,rely=0.1)
-
-    
     
     wel = Label(menu_canvas,text=' W E L C O M E  T O  Q U I Z  S T A T I O N ',fg="white",bg="orange") 
     wel.config(font=('Broadway 22'))
     wel.place(relx=0.1,rely=0.02)
     
-    abcdefgh='Welcome '+ abcdefgh
+    abcdefgh='Welcome '+ user
     level34 = Label(menu_frame,text=abcdefgh,bg="black",font="calibri 18",fg="white")
     level34.place(relx=0.17,rely=0.15)
     
@@ -211,20 +211,20 @@ def menu(abcdefgh):
         x = var.get()
         print(x)
         if x == 1:
-            menu.destroy()
+            menu_window.destroy()
             easy()
         elif x == 2:
-            menu.destroy()
+            menu_window.destroy()
             medium()
         
         elif x == 3:
-            menu.destroy()
+            menu_window.destroy()
             difficult()
         else:
             pass
     letsgo = Button(menu_frame,text="Let's Go",bg="black",fg="white",font="calibri 12",command=navigate)
     letsgo.place(relx=0.25,rely=0.8)
-    menu.mainloop()
+    menu_window.mainloop()
 def easy():
     
     global e
@@ -401,7 +401,7 @@ def easy():
         global score
         if (var.get() in answer):
             score+=1
-        display()
+        showMark(score)
     
     submit = Button(easy_frame,command=calc,text="Submit", fg="white", bg="black")
     submit.place(relx=0.5,rely=0.82,anchor=CENTER)
@@ -595,7 +595,7 @@ def medium():
         global score
         if (var.get() in answer):
             score+=1
-        display()
+        showMark(score)
     
     submit = Button(med_frame,command=calc,text="Submit", fg="white", bg="black")
     submit.place(relx=0.5,rely=0.82,anchor=CENTER)
@@ -791,7 +791,7 @@ def difficult():
         #count=count+1
         if (var.get() in answer):
             score+=1
-        display()
+        showMark(score)
     
    # def lastPage():
     #    h.destroy()
@@ -815,107 +815,58 @@ def difficult():
     h.mainloop()
 
 def showMark(mark):
-    # IMPROVEMENT 1: Larger window with custom size
+    # Store the score in the database
+    conn = sqlite3.connect('quiz.db')
+    cursor = conn.cursor()
+    cursor.execute("INSERT INTO scores (username, score) VALUES (?, ?)", (current_user, mark))
+    conn.commit()
+
+    # Retrieve top scores
+    cursor.execute("SELECT username, score FROM scores ORDER BY score DESC LIMIT 5")
+    top_scores = cursor.fetchall()
+    conn.close()
+
     sh = Tk()
     sh.title('Quiz Results')
-    sh.geometry('800x600')  # Increased from default size
+    sh.geometry('800x600')
     
-    # IMPROVEMENT 2: Added gradient-like effect with nested frames
-    result_canvas = Canvas(sh, width=800, height=600, bg="#1a1a1a")  # Dark outer background
+    result_canvas = Canvas(sh, width=800, height=600, bg="#1a1a1a")
     result_canvas.pack(fill="both", expand=True)
     
-    result_frame = Frame(result_canvas, bg="#2d2d2d")  # Slightly lighter inner background
+    result_frame = Frame(result_canvas, bg="#2d2d2d")
     result_frame.place(relwidth=0.8, relheight=0.8, relx=0.1, rely=0.1)
     
-    # IMPROVEMENT 3: Added congratulations header with custom styling
     congrats = "Quiz Completed!"
-    clabel = Label(result_frame, text=congrats, 
-                  font=("Helvetica", 24, "bold"),  # Larger, bold font
-                  fg="#FFD700",  # Gold color for emphasis
-                  bg="#2d2d2d")
+    clabel = Label(result_frame, text=congrats, font=("Helvetica", 24, "bold"), fg="#FFD700", bg="#2d2d2d")
     clabel.pack(pady=20)
     
-    # IMPROVEMENT 4: Enhanced score display with percentage
     percentage = (mark/5) * 100
     score_text = f"Your Score: {mark}/5 ({percentage:.1f}%)"
-    score_label = Label(result_frame, text=score_text, 
-                       font=("Helvetica", 20),
-                       fg="white", bg="#2d2d2d")
+    score_label = Label(result_frame, text=score_text, font=("Helvetica", 20), fg="white", bg="#2d2d2d")
     score_label.pack(pady=10)
     
-    # IMPROVEMENT 5: Added dynamic performance message with emojis
     if percentage >= 80:
         message = "Excellent! Outstanding performance! 🏆"
-        color = "#00ff00"  # Green for excellent
+        color = "#00ff00"
     elif percentage >= 60:
         message = "Good job! Keep it up! 👍"
-        color = "#ffff00"  # Yellow for good
+        color = "#ffff00"
     else:
         message = "Keep practicing! You can do better! 💪"
-        color = "#ff9900"  # Orange for needs improvement
+        color = "#ff9900"
         
-    msg_label = Label(result_frame, text=message, 
-                     font=("Helvetica", 16),
-                     fg=color, bg="#2d2d2d")
+    msg_label = Label(result_frame, text=message, font=("Helvetica", 16), fg=color, bg="#2d2d2d")
     msg_label.pack(pady=10)
     
-    # IMPROVEMENT 6: Enhanced pie chart with better styling
-    from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
-    from matplotlib.figure import Figure
-    
-    fig = Figure(figsize=(6, 4), dpi=100)
-    fig.patch.set_facecolor('#2d2d2d')  # Match background color
-    
-    plot = fig.add_subplot(111)
-    plot.set_facecolor('#2d2d2d')
-    
-    # IMPROVEMENT 7: Better color scheme for pie chart
-    labels = ['Correct', 'Incorrect']
-    sizes = [int(mark), 5-int(mark)]
-    colors = ['#00ff00', '#ff4444']  # Green for correct, red for incorrect
-    explode = (0.1, 0)  # Emphasize correct answers
-    
-    plot.pie(sizes, explode=explode, labels=labels, colors=colors,
-            autopct='%1.1f%%', shadow=True, startangle=90)
-    
-    canvas = FigureCanvasTkAgg(fig, master=result_frame)
-    canvas.draw()
-    canvas.get_tk_widget().pack(pady=20)
-    
-    # IMPROVEMENT 8: Added hover effects for buttons
-    def on_enter(e, button):
-        button['background'] = '#404040'  # Lighter shade on hover
-        
-    def on_leave(e, button):
-        button['background'] = '#333333'  # Original color
-    
-    # IMPROVEMENT 9: Better button organization with frame
-    button_frame = Frame(result_frame, bg="#2d2d2d")
-    button_frame.pack(pady=20)
-    
-    # IMPROVEMENT 10: Styled buttons with modern flat design
-    retry_btn = Button(button_frame, text="Try Again", 
-                      command=lambda: [sh.destroy(), easy()],
-                      font=("Helvetica", 12), 
-                      width=15, height=2,
-                      bg="#333333", fg="white", 
-                      relief=FLAT)  # Flat design for modern look
-    retry_btn.pack(side=LEFT, padx=10)
-    # Add hover effect
-    retry_btn.bind("<Enter>", lambda e: on_enter(e, retry_btn))
-    retry_btn.bind("<Leave>", lambda e: on_leave(e, retry_btn))
-    
-    signout_btn = Button(button_frame, text="Sign Out", 
-                        command=lambda: [sh.destroy(), start()],
-                        font=("Helvetica", 12), 
-                        width=15, height=2,
-                        bg="#333333", fg="white", 
-                        relief=FLAT)
-    signout_btn.pack(side=LEFT, padx=10)
-    # Add hover effect
-    signout_btn.bind("<Enter>", lambda e: on_enter(e, signout_btn))
-    signout_btn.bind("<Leave>", lambda e: on_leave(e, signout_btn))
-    
+    # Display top scores
+    ranking_label = Label(result_frame, text="Top Scores", font=("Helvetica", 18, "bold"), fg="white", bg="#2d2d2d")
+    ranking_label.pack(pady=10)
+
+    for i, (username, score) in enumerate(top_scores, start=1):
+        score_text = f"{i}. {username}: {score}"
+        score_label = Label(result_frame, text=score_text, font=("Helvetica", 14), fg="white", bg="#2d2d2d")
+        score_label.pack()
+
     sh.mainloop()
 
 def start():
@@ -936,3 +887,16 @@ def start():
     
 if __name__=='__main__':
     start()
+
+def initialize_database():
+    conn = sqlite3.connect('quiz.db')
+    cursor = conn.cursor()
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS scores (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            username TEXT,
+            score INTEGER
+        )
+    ''')
+    conn.commit()
+    conn.close()
