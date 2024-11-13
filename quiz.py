@@ -4,11 +4,24 @@ import random
 import sqlite3 
 import time
 
+def create_exit_button(window):
+    """Create a consistent exit button for any window"""
+    exit_button = Button(window, 
+                        text="X", 
+                        command=lambda: window.destroy(),
+                        bg="red", 
+                        fg="white",
+                        font=("Arial", "12", "bold"),
+                        width=3,
+                        height=1)
+    exit_button.place(relx=0.95, rely=0.02, anchor=NE)
+
 def loginPage(logdata):
     sup.destroy()
     global login
     login = Tk()
     login.title('Quiz App Login')
+    create_exit_button(login)
     
     user_name = StringVar()
     password = StringVar()
@@ -61,6 +74,7 @@ def signUpPage():
     global sup
     sup = Tk()
     sup.title('Quiz App')
+    create_exit_button(sup)
     
     fname = StringVar()
     uname = StringVar()
@@ -173,6 +187,7 @@ def menu(abcdefgh):
     global menu 
     menu = Tk()
     menu.title('Quiz App Menu')
+    create_exit_button(menu)
     
     
     menu_canvas = Canvas(menu,width=720,height=440,bg="orange")
@@ -230,6 +245,7 @@ def easy():
     global e
     e = Tk()
     e.title('Quiz App - Easy Level')
+    create_exit_button(e)
     
     easy_canvas = Canvas(e,width=720,height=440,bg="orange")
     easy_canvas.pack()
@@ -347,22 +363,52 @@ def easy():
     li = ['',0,1,2,3,4]
     x = random.choice(li[1:])
     
-    ques = Label(easy_frame,text =easyQ[x][0],font="calibri 12",bg="orange")
-    ques.place(relx=0.5,rely=0.2,anchor=CENTER)
+    # Question label with better visibility
+    ques = Label(easy_frame,
+                 text=easyQ[x][0],
+                 font=("calibri", 16, "bold"),  # Larger, bold font
+                 bg="orange",                   # Distinctive background
+                 wraplength=500,                # Wrap text if too long
+                 justify=LEFT,                  # Left-align text
+                 padx=20,                       # Horizontal padding
+                 pady=10)                       # Vertical padding
+    ques.place(relx=0.5, rely=0.2, anchor=CENTER)
 
     var = StringVar()
     
-    a = Radiobutton(easy_frame,text=easyQ[x][1],font="calibri 10",value=easyQ[x][1],variable = var,bg="#BADA55")
-    a.place(relx=0.5,rely=0.42,anchor=CENTER)
+    # Make radio buttons bigger and square-shaped
+    style_config = {
+        'font': "calibri 16",      # Large font
+        'width': 50,               # Much wider
+        'height': 3,               # Taller
+        'selectcolor': '#333333',  # Dark grey when selected
+        'indicatoron': 0,          # Remove circular indicator
+        'relief': 'raised',        # 3D effect
+        'bd': 3,                   # Border width
+        'activebackground': '#555555',  # Color when hovering
+        'activeforeground': 'white'     # Text color when hovering
+    }
+    
+    # Center the text and add padding
+    a = Radiobutton(easy_frame, text=easyQ[x][1], value=easyQ[x][1], 
+                    variable=var, bg="#BADA55", **style_config,
+                    padx=20, pady=10, anchor='center')
+    a.place(relx=0.5, rely=0.42, anchor=CENTER)
 
-    b = Radiobutton(easy_frame,text=easyQ[x][2],font="calibri 10",value=easyQ[x][2],variable = var,bg="#BADA55")
-    b.place(relx=0.5,rely=0.52,anchor=CENTER)
+    b = Radiobutton(easy_frame, text=easyQ[x][2], value=easyQ[x][2], 
+                    variable=var, bg="#BADA55", **style_config,
+                    padx=20, pady=10, anchor='center')
+    b.place(relx=0.5, rely=0.52, anchor=CENTER)
 
-    c = Radiobutton(easy_frame,text=easyQ[x][3],font="calibri 10",value=easyQ[x][3],variable = var,bg="#BADA55")
-    c.place(relx=0.5,rely=0.62,anchor=CENTER) 
+    c = Radiobutton(easy_frame, text=easyQ[x][3], value=easyQ[x][3], 
+                    variable=var, bg="#BADA55", **style_config,
+                    padx=20, pady=10, anchor='center')
+    c.place(relx=0.5, rely=0.62, anchor=CENTER)
 
-    d = Radiobutton(easy_frame,text=easyQ[x][4],font="calibri 10",value=easyQ[x][4],variable = var,bg="#BADA55")
-    d.place(relx=0.5,rely=0.72,anchor=CENTER) 
+    d = Radiobutton(easy_frame, text=easyQ[x][4], value=easyQ[x][4], 
+                    variable=var, bg="#BADA55", **style_config,
+                    padx=20, pady=10, anchor='center')
+    d.place(relx=0.5, rely=0.72, anchor=CENTER)
     
     li.remove(x)
     
@@ -403,11 +449,23 @@ def easy():
             score+=1
         display()
     
-    submit = Button(easy_frame,command=calc,text="Submit", fg="white", bg="black")
-    submit.place(relx=0.5,rely=0.82,anchor=CENTER)
+    # Exit button (placed at top of page)
+    exit_button = Button(easy_frame, 
+                        text="Exit", 
+                        command=lambda: e.destroy(),
+                        bg="red", 
+                        fg="white",
+                        font=("Arial", "12", "bold"),
+                        width=15,
+                        height=1)
+    exit_button.place(relx=0.87, rely=0.1, anchor=CENTER)  # Moved to top
     
-    nextQuestion = Button(easy_frame,command=display,text="Next", fg="white", bg="black")
-    nextQuestion.place(relx=0.87,rely=0.82,anchor=CENTER)
+    # Submit and Next buttons
+    nextQuestion = Button(easy_frame, command=display, text="Next", fg="white", bg="black")
+    nextQuestion.place(relx=0.5, rely=0.82, anchor=CENTER)
+    
+    submit = Button(easy_frame, command=calc, text="Submit", fg="white", bg="black")
+    submit.place(relx=0.87, rely=0.82, anchor=CENTER)
     
    # pre=Button(easy_frame,command=display, text="Previous", fg="white", bg="black")
    # pre.place(relx=0.75, rely=0.82, anchor=CENTER)
@@ -423,6 +481,7 @@ def medium():
     global m
     m = Tk()
     m.title('Quiz App - Medium Level')
+    create_exit_button(m)
     
     med_canvas = Canvas(m,width=720,height=440,bg="#101357")
     med_canvas.pack()
@@ -541,22 +600,34 @@ def medium():
     li = ['',0,1,2,3,4]
     x = random.choice(li[1:])
     
-    ques = Label(med_frame,text =mediumQ[x][0],font="calibri 12",bg="#B26500")
-    ques.place(relx=0.5,rely=0.2,anchor=CENTER)
+    # Question label with better visibility
+    ques = Label(med_frame,
+                 text=mediumQ[x][0],
+                 font=("calibri", 16, "bold"),  # Larger, bold font
+                 bg="#B26500",                   # Distinctive background
+                 wraplength=500,                # Wrap text if too long
+                 justify=LEFT,                  # Left-align text
+                 padx=20,                       # Horizontal padding
+                 pady=10)                       # Vertical padding
+    ques.place(relx=0.5, rely=0.2, anchor=CENTER)
 
     var = StringVar()
     
-    a = Radiobutton(med_frame,text=mediumQ[x][1],font="calibri 10",value=mediumQ[x][1],variable = var,bg="#A1A100")
-    a.place(relx=0.5,rely=0.42,anchor=CENTER)
+    a = Radiobutton(med_frame, text=mediumQ[x][1], font="calibri 14", value=mediumQ[x][1], 
+                    variable=var, bg="#A1A100", width=30, height=2)
+    a.place(relx=0.5, rely=0.42, anchor=CENTER)
 
-    b = Radiobutton(med_frame,text=mediumQ[x][2],font="calibri 10",value=mediumQ[x][2],variable = var,bg="#A1A100")
-    b.place(relx=0.5,rely=0.52,anchor=CENTER)
+    b = Radiobutton(med_frame, text=mediumQ[x][2], font="calibri 14", value=mediumQ[x][2], 
+                    variable=var, bg="#A1A100", width=30, height=2)
+    b.place(relx=0.5, rely=0.52, anchor=CENTER)
 
-    c = Radiobutton(med_frame,text=mediumQ[x][3],font="calibri 10",value=mediumQ[x][3],variable = var,bg="#A1A100")
-    c.place(relx=0.5,rely=0.62,anchor=CENTER) 
+    c = Radiobutton(med_frame, text=mediumQ[x][3], font="calibri 14", value=mediumQ[x][3], 
+                    variable=var, bg="#A1A100", width=30, height=2)
+    c.place(relx=0.5, rely=0.62, anchor=CENTER)
 
-    d = Radiobutton(med_frame,text=mediumQ[x][4],font="calibri 10",value=mediumQ[x][4],variable = var,bg="#A1A100")
-    d.place(relx=0.5,rely=0.72,anchor=CENTER) 
+    d = Radiobutton(med_frame, text=mediumQ[x][4], font="calibri 14", value=mediumQ[x][4], 
+                    variable=var, bg="#A1A100", width=30, height=2)
+    d.place(relx=0.5, rely=0.72, anchor=CENTER)
     
     li.remove(x)
     
@@ -597,11 +668,23 @@ def medium():
             score+=1
         display()
     
-    submit = Button(med_frame,command=calc,text="Submit", fg="white", bg="black")
-    submit.place(relx=0.5,rely=0.82,anchor=CENTER)
+    # Exit button (placed at top of page)
+    exit_button = Button(med_frame, 
+                        text="Exit", 
+                        command=lambda: m.destroy(),
+                        bg="red", 
+                        fg="white",
+                        font=("Arial", "12", "bold"),
+                        width=15,
+                        height=1)
+    exit_button.place(relx=0.87, rely=0.1, anchor=CENTER)  # Moved to top
     
-    nextQuestion = Button(med_frame,command=display,text="Next", fg="white", bg="black")
-    nextQuestion.place(relx=0.87,rely=0.82,anchor=CENTER)
+    # Submit and Next buttons
+    nextQuestion = Button(med_frame, command=display, text="Next", fg="white", bg="black")
+    nextQuestion.place(relx=0.5, rely=0.82, anchor=CENTER)
+    
+    submit = Button(med_frame, command=calc, text="Submit", fg="white", bg="black")
+    submit.place(relx=0.87, rely=0.82, anchor=CENTER)
     
    # pre=Button(med_frame,command=display, text="Previous", fg="white", bg="black")
    # pre.place(relx=0.75, rely=0.82, anchor=CENTER)
@@ -617,6 +700,7 @@ def difficult():
     #count=0
     h = Tk()
     h.title('Quiz App - Hard Level')
+    create_exit_button(h)
     
     hard_canvas = Canvas(h,width=720,height=440,bg="#101357")
     hard_canvas.pack()
@@ -736,22 +820,34 @@ def difficult():
     li = ['',0,1,2,3,4]
     x = random.choice(li[1:])
     
-    ques = Label(hard_frame,text =hardQ[x][0],font="calibri 12",bg="#A0DB8E")
-    ques.place(relx=0.5,rely=0.2,anchor=CENTER)
+    # Question label with better visibility
+    ques = Label(hard_frame,
+                 text=hardQ[x][0],
+                 font=("calibri", 16, "bold"),  # Larger, bold font
+                 bg="#A0DB8E",                   # Distinctive background
+                 wraplength=500,                # Wrap text if too long
+                 justify=LEFT,                  # Left-align text
+                 padx=20,                       # Horizontal padding
+                 pady=10)                       # Vertical padding
+    ques.place(relx=0.5, rely=0.2, anchor=CENTER)
 
     var = StringVar()
     
-    a = Radiobutton(hard_frame,text=hardQ[x][1],font="calibri 10",value=hardQ[x][1],variable = var,bg="#008080",fg="white")
-    a.place(relx=0.5,rely=0.42,anchor=CENTER)
+    a = Radiobutton(hard_frame, text=hardQ[x][1], font="calibri 14", value=hardQ[x][1], 
+                    variable=var, bg="#008080", fg="white", width=30, height=2)
+    a.place(relx=0.5, rely=0.42, anchor=CENTER)
 
-    b = Radiobutton(hard_frame,text=hardQ[x][2],font="calibri 10",value=hardQ[x][2],variable = var,bg="#008080",fg="white")
-    b.place(relx=0.5,rely=0.52,anchor=CENTER)
+    b = Radiobutton(hard_frame, text=hardQ[x][2], font="calibri 14", value=hardQ[x][2], 
+                    variable=var, bg="#008080", fg="white", width=30, height=2)
+    b.place(relx=0.5, rely=0.52, anchor=CENTER)
 
-    c = Radiobutton(hard_frame,text=hardQ[x][3],font="calibri 10",value=hardQ[x][3],variable = var,bg="#008080",fg="white")
-    c.place(relx=0.5,rely=0.62,anchor=CENTER) 
+    c = Radiobutton(hard_frame, text=hardQ[x][3], font="calibri 14", value=hardQ[x][3], 
+                    variable=var, bg="#008080", fg="white", width=30, height=2)
+    c.place(relx=0.5, rely=0.62, anchor=CENTER)
 
-    d = Radiobutton(hard_frame,text=hardQ[x][4],font="calibri 10",value=hardQ[x][4],variable = var,bg="#008080",fg="white")
-    d.place(relx=0.5,rely=0.72,anchor=CENTER) 
+    d = Radiobutton(hard_frame, text=hardQ[x][4], font="calibri 14", value=hardQ[x][4], 
+                    variable=var, bg="#008080", fg="white", width=30, height=2)
+    d.place(relx=0.5, rely=0.72, anchor=CENTER)
     
     li.remove(x)
     
@@ -797,11 +893,23 @@ def difficult():
     #    h.destroy()
      #   showMark()
     
-    submit = Button(hard_frame,command=calc,text="Submit", fg="white", bg="black")
-    submit.place(relx=0.5,rely=0.82,anchor=CENTER)
+    # Exit button (placed at top of page)
+    exit_button = Button(hard_frame, 
+                        text="Exit", 
+                        command=lambda: h.destroy(),
+                        bg="red", 
+                        fg="white",
+                        font=("Arial", "12", "bold"),
+                        width=15,
+                        height=1)
+    exit_button.place(relx=0.87, rely=0.1, anchor=CENTER)  # Moved to top
     
-    nextQuestion = Button(hard_frame,command=display,text="Next", fg="white", bg="black")
-    nextQuestion.place(relx=0.87,rely=0.82,anchor=CENTER)
+    # Submit and Next buttons
+    nextQuestion = Button(hard_frame, command=display, text="Next", fg="white", bg="black")
+    nextQuestion.place(relx=0.5, rely=0.82, anchor=CENTER)
+    
+    submit = Button(hard_frame, command=calc, text="Submit", fg="white", bg="black")
+    submit.place(relx=0.87, rely=0.82, anchor=CENTER)
     
     #pre=Button(hard_frame,command=display, text="Previous", fg="white", bg="black")
     #pre.place(relx=0.75, rely=0.82, anchor=CENTER)
@@ -818,6 +926,7 @@ def showMark(mark):
     # IMPROVEMENT 1: Larger window with custom size
     sh = Tk()
     sh.title('Quiz Results')
+    create_exit_button(sh)
     sh.geometry('800x600')  # Increased from default size
     
     # IMPROVEMENT 2: Added gradient-like effect with nested frames
