@@ -186,10 +186,10 @@ def signUpPage():
 
 def menu(user):
     login.destroy()
-    global menu 
-    menu = Tk()
-    menu.title('Quiz App Menu')
-    create_exit_button(menu)
+    global menu_window
+    menu_window = Tk()
+    menu_window.title('Quiz App Menu')
+    create_exit_button(menu_window)
     
     
     menu_canvas = Canvas(menu_window,width=720,height=440,bg="orange")
@@ -937,7 +937,7 @@ def showMark(mark):
     sh = Tk()
     sh.title('Quiz Results')
     create_exit_button(sh)
-    sh.geometry('800x600')  # Increased from default size
+    sh.geometry('800x600')  # Keep consistent geometry
     
     result_canvas = Canvas(sh, width=800, height=600, bg="#1a1a1a")
     result_canvas.pack(fill="both", expand=True)
